@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>توزيع المياه وخزانات الماء العذب على الأرض</title>
+<style>
+:root{--fs:20px;--salt:#1c4e9c;--fresh:#00a3b8;--land:#b5834a;--ink:#14213d;--bg:#f4f8fb;--line:#cfdbe6;--c1:#3b82c4;--c2:#2f9e6b;--c3:#8e6bbf}
+*{box-sizing:border-box}
+html{font-size:var(--fs)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,Arial,sans-serif;line-height:1.55}
+span.n,.n{unicode-bidi:isolate;direction:ltr;display:inline-block;font-variant-numeric:lining-nums}
+header{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center;justify-content:space-between;padding:.6rem 1rem;background:#0f2e5c;color:#fff;position:sticky;top:0;z-index:5}
+h1{font-size:1.2rem;margin:0}
+.fsbar{display:flex;align-items:center;gap:.5rem;font-size:.8rem}
+.fsbar button{font:inherit;font-weight:700;min-width:2.4em;padding:.15em .5em;border:2px solid #fff;background:transparent;color:#fff;border-radius:.5em;cursor:pointer}
+.fsbar button:hover,.fsbar button:focus-visible{background:#fff;color:#0f2e5c}
+.fsbar input{width:9rem;accent-color:#7fd1ff}
+main{max-width:1180px;margin:0 auto;padding:1rem}
+.crumbs{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-bottom:.85rem;font-size:.8rem}
+.crumbs button{font:inherit;border:2px solid var(--salt);background:#fff;color:var(--salt);border-radius:2em;padding:.15em .9em;cursor:pointer;font-weight:700}
+.crumbs button.cur{background:var(--salt);color:#fff}
+.crumbs button:disabled{opacity:.4;cursor:default}
+section{animation:in .45s}
+@keyframes in{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){section{animation:none}}
+[hidden]{display:none!important}
+.row{display:flex;gap:1.5rem;align-items:center;justify-content:center;flex-wrap:wrap}
+.chip{font:inherit;border:3px solid;border-radius:16px;padding:.5rem 1.2rem;background:#fff;text-align:center;min-width:9rem}
+.chip .big{font-size:2.6rem;font-weight:800;line-height:1.1;display:block}
+.chip .t{font-weight:700;font-size:1rem}
+button.chip{cursor:pointer}
+button.chip:hover,button.chip:focus-visible{box-shadow:0 0 0 4px rgba(20,33,61,.2)}
+.water{border-color:var(--salt);color:var(--salt)}
+.landc{border-color:var(--land);color:#7a5226}
+.globe{width:min(60vw,340px);aspect-ratio:1;border-radius:50%;cursor:pointer;position:relative;box-shadow:0 0 0 6px rgba(80,170,255,.25),0 0 40px rgba(60,140,255,.5)}
+.globe canvas{width:100%;height:100%;border-radius:50%;display:block}
+.hint{background:#fff8d6;border:2px dashed #b38600;border-radius:12px;padding:.5rem .9rem;font-size:.85rem;text-align:center;margin:1rem auto 0;max-width:38rem}
+.info{background:#fff;border-inline-start:8px solid var(--fresh);border-radius:10px;padding:.7rem 1rem;font-size:.95rem;margin-top:1rem}
+.pie{width:min(70vw,340px);aspect-ratio:1}
+.pie svg{width:100%;height:100%;overflow:visible}
+.pie path{cursor:pointer;transition:transform .2s}
+.pie .fw:hover,.pie .fw:focus-visible{transform:translate(9px,-3px)}
+.bars{background:#fff;border:2px solid var(--line);border-radius:14px;padding:.8rem 1rem;margin-top:1.2rem}
+.bars h2{font-size:.95rem;margin:0 0 .6rem}
+.chart{position:relative;direction:ltr;height:5.2rem;border-left:3px solid #000;border-bottom:3px solid #000;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),#7a8794 calc(10% - 1px) 10%)}
+.chart .bar{position:absolute;left:0;height:1.8rem;border:2px solid #000;border-radius:0 4px 4px 0}
+.axis,.ax{direction:ltr;position:relative;height:1.3rem;font-size:.7rem;margin-top:.2rem}
+.axis span,.ax span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.legrow{display:flex;gap:2rem;flex-wrap:wrap;margin-top:.8rem;font-size:.9rem;font-weight:700;align-items:center}
+.sq{display:inline-block;width:1.4em;height:1em;border:2px solid #000;vertical-align:middle;margin-inline-end:.4rem}
+.hatch{background:repeating-linear-gradient(45deg,#fff 0 4px,#00a3b8 4px 6px)}
+.solid{background:var(--salt)}
+.tree{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:4.6rem 1rem;align-items:stretch}
+.tree svg.lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.nd{background:#fff;border:3px solid;border-radius:14px;padding:.45rem .7rem;text-align:center;font:inherit;color:inherit;position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.nd .t{font-weight:700;font-size:.85rem;line-height:1.35}
+.nd .big{font-size:2.2rem;font-weight:800;line-height:1.1}
+.root{grid-column:2/4;grid-row:1;border-color:#0f2e5c;color:#0f2e5c}
+.pbar{grid-column:1/5;grid-row:2;display:flex;height:4.2rem;border:3px solid #000;border-radius:10px;position:relative;z-index:1;margin-top:1.2rem}
+.seg.salt{width:97%;background:var(--salt);color:#fff;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;border-radius:0 7px 7px 0}
+.seg.salt .big{font-size:2.2rem;font-weight:800}
+.seg.salt .t{font-weight:700;font-size:.95rem}
+.seg.fresh{width:3%;background:repeating-linear-gradient(45deg,#fff 0 4px,#00a3b8 4px 7px);border-right:3px solid #000;border-radius:7px 0 0 7px;position:relative}
+.flab{position:absolute;left:-3px;bottom:calc(100% + .9rem);background:#fff;border:3px solid var(--fresh);color:#007a8a;border-radius:10px;padding:.15rem .7rem;font-weight:800;font-size:1.1rem;white-space:nowrap}
+.flab .n{font-size:1.5rem}
+.seg.salt .tag.no{background:#fff}
+.leaf{grid-row:3;cursor:pointer}
+#l0{grid-column:2}#l1{grid-column:3}#l2{grid-column:4}
+.leaf.no{border-style:dashed;background:#f1f3f5;filter:grayscale(.6)}
+.leaf.use{border-width:5px;border-color:#14a05a;background:#e9fbf1;box-shadow:0 0 0 6px rgba(20,160,90,.25)}
+.leaf.sel{box-shadow:0 0 0 5px rgba(20,33,61,.35)}
+.tag{font-size:.7rem;font-weight:800;border-radius:2em;padding:.1em .7em;margin-top:.3rem}
+.tag.no{background:#fde8e8;color:#b01919;border:2px solid #b01919}
+.tag.ok{background:#14a05a;color:#fff}
+@media(prefers-reduced-motion:no-preference){.leaf.use{animation:glow 1.6s infinite}@keyframes glow{50%{box-shadow:0 0 0 12px rgba(20,160,90,.12)}}}
+.banner{margin-top:1.2rem;background:#0f2e5c;color:#fff;border-radius:14px;padding:.75rem 1rem;text-align:center;font-size:1.05rem;display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;justify-content:center}
+.banner b{color:#7fffb0;font-size:1.25em}
+.nextbtn{font:inherit;font-weight:800;font-size:.9rem;background:#14a05a;color:#fff;border:none;border-radius:2em;padding:.4rem 1.2rem;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.nextbtn:hover{background:#0f8448}
+.b2{display:grid;grid-template-columns:auto 1fr;gap:.6rem 1rem;align-items:center}
+.b2 .lb{font-weight:700;font-size:.85rem;text-align:right}
+.b2 .ax{grid-column:2;direction:ltr;position:relative;height:1.3rem;font-size:.7rem}
+.b2 .ax span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.trk{direction:ltr;position:relative;height:2.6rem;border-left:3px solid #000;border-bottom:3px solid #000;background:repeating-linear-gradient(90deg,transparent 0 calc(3.3333% - 1px),#b3bcc6 calc(3.3333% - 1px) 3.3333%),repeating-linear-gradient(90deg,transparent 0 calc(16.6667% - 2px),#555 calc(16.6667% - 2px) 16.6667%)}
+.trk i{position:absolute;left:0;top:.3rem;bottom:.3rem;border:2px solid #000;border-radius:0 4px 4px 0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.trk b{position:absolute;top:50%;transform:translateY(-50%);font-size:.85rem;background:#fff;padding:0 .3em;border-radius:4px}
+
+/* ===== المرحلة 4: خزانات الماء العذب ===== */
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:stretch}
+.res-card{background:#fff;border:3px solid var(--line);border-radius:16px;padding:1rem;display:flex;flex-direction:column;gap:.75rem;box-shadow:0 4px 16px rgba(15,46,92,.07)}
+.res-card.nat{border-color:#1c4e9c}
+.res-card.art{border-color:#008799}
+.res-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+.res-head h2{margin:0;font-size:1.1rem;color:#0f2e5c}
+.badge{font-size:.72rem;font-weight:800;padding:.15em .75em;border-radius:2em;color:#fff}
+.badge.nat{background:#1c4e9c}
+.badge.art{background:#008799}
+.diagram-box{background:#f8fbff;border:2px solid #dce7f2;border-radius:12px;padding:.4rem;overflow:hidden}
+.diagram-box svg{width:100%;height:auto;display:block}
+.pills{display:flex;flex-wrap:wrap;gap:.45rem}
+.pill{font:inherit;font-size:.78rem;font-weight:700;padding:.3em .75em;border-radius:2em;border:2px solid #cbd7e6;background:#f4f8fb;color:#14213d;cursor:pointer;transition:.15s}
+.pill:hover,.pill.act{background:#0f2e5c;color:#fff;border-color:#0f2e5c}
+.res-info{background:#eef6ff;border-inline-start:6px solid #1c4e9c;border-radius:10px;padding:.6rem .85rem;font-size:.86rem;min-height:4.2rem}
+.res-card.art .res-info{background:#e9f9fb;border-color:#008799}
+
+/* ===== تحسين المقارنة: طبيعي مقابل صناعي ===== */
+.res-card.nat{border-color:#8a5a2b;background:#fffaf3}
+.res-card.art{border-color:#3d4f63;background:#f5f8fb}
+.badge.nat{background:#8a5a2b}
+.badge.art{background:#3d4f63}
+.res-card.nat .res-info{background:#f6e7d3;border-color:#8a5a2b}
+.res-card.art .res-info{background:#e3eaf1;border-color:#3d4f63}
+.res-card.nat .pill:hover,.res-card.nat .pill.act{background:#8a5a2b;border-color:#8a5a2b}
+.res-card.art .pill:hover,.res-card.art .pill.act{background:#3d4f63;border-color:#3d4f63}
+.holder{display:flex;align-items:center;gap:.7rem;border-radius:12px;padding:.55rem .8rem;border:3px solid}
+.holder .ic{font-size:2rem;line-height:1}
+.holder .q{font-size:.75rem;font-weight:700;opacity:.85;display:block}
+.holder .a{font-size:1.25rem;font-weight:800;line-height:1.2;display:block}
+.holder.nat{background:#7c4d2b;border-color:#4d2c15;color:#fff}
+.holder.art{background:#4a5568;border-color:#1a202c;color:#fff}
+.photo{margin:0;border:3px solid;border-radius:12px;overflow:hidden;background:#fff;position:relative}
+.res-card.nat .photo{border-color:#8a5a2b}
+.res-card.art .photo{border-color:#3d4f63}
+.photo img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#d9e2ea}
+.photo figcaption{padding:.45rem .7rem;font-size:.78rem;line-height:1.5}
+.photo .cr{display:block;font-size:.65rem;color:#44546a;margin-top:.2rem}
+.photo.bad img{display:none}
+.photo.bad::before{content:"تعذّر تحميل الصورة — تحتاج الصفحة إلى اتصال بالإنترنت";display:block;padding:2rem 1rem;text-align:center;font-size:.8rem;background:#eef2f6}
+.cmp{margin-top:1rem;width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:3px solid #0f2e5c;border-radius:14px;overflow:hidden;font-size:.88rem}
+.cmp th,.cmp td{padding:.55rem .8rem;text-align:center;border-bottom:2px solid var(--line)}
+.cmp tr:last-child td,.cmp tr:last-child th{border-bottom:none}
+.cmp thead th{color:#fff;font-size:1rem}
+.cmp thead th.c0{background:#0f2e5c}
+.cmp thead th.c1{background:#7c4d2b}
+.cmp thead th.c2{background:#4a5568}
+.cmp tbody th{background:#eef3f8;color:#0f2e5c;width:22%}
+.cmp td.key{font-weight:800;font-size:1.05rem}
+.cmp td.k1{background:#f6e7d3;color:#4d2c15}
+.cmp td.k2{background:#e3eaf1;color:#1a202c}
+
+/* ===== المرحلة 5: ملخص مرئي ===== */
+.sum-box{background:#fff;border:3px solid #0f2e5c;border-radius:16px;padding:.6rem;box-shadow:0 4px 16px rgba(15,46,92,.08)}
+.sum-box h2{margin:.2rem .4rem .5rem;font-size:1.15rem;color:#0f2e5c}
+.sum-box svg{width:100%;height:auto;display:block}
+.sum-box svg .w{font-weight:800}
+.sum-box svg .num{direction:ltr;unicode-bidi:isolate;font-weight:900}
+.kcards{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-top:1rem}
+.kcard{border:4px solid;border-radius:14px;padding:.6rem .5rem;text-align:center;background:#fff}
+.kcard .kw{font-size:1rem;font-weight:800;line-height:1.35;display:block}
+.kcard .kn{font-size:2.6rem;font-weight:900;line-height:1.1;display:block;direction:ltr;unicode-bidi:isolate}
+.kcard .kt{font-size:.8rem;font-weight:800;display:block;margin-top:.2rem}
+.kcard.salt{border-color:#1c4e9c;color:#1c4e9c;background:#eaf1fb}
+.kcard.ice{border-color:#0e8fbf;color:#08678c;background:#e6f7fd}
+.kcard.use{border-color:#14a05a;color:#0b7a41;background:#e9fbf1;box-shadow:0 0 0 6px rgba(20,160,90,.25)}
+.kcard.vap{border-color:#8e6bbf;color:#5f3f94;background:#f2ecfa}
+.sumbanner{margin-top:1rem;background:#0f2e5c;color:#fff;border-radius:14px;padding:.8rem 1rem;text-align:center;font-size:1.15rem;font-weight:700}
+.sumbanner b{color:#7fffb0;font-size:1.3em}
+@media(max-width:860px){.kcards{grid-template-columns:1fr 1fr}}
+.summary-strip{margin-top:1rem;background:#0f2e5c;color:#fff;border-radius:14px;padding:.8rem 1.1rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-size:.88rem}
+.summary-strip b{color:#7fffb0}
+.note{font-size:.7rem;color:#44546a;margin-top:1rem}
+@media(max-width:860px){.res-grid,.summary-strip{grid-template-columns:1fr}}
+@media(max-width:760px){.tree{grid-template-columns:1fr 1fr}.root,.fresh{grid-column:1/3}.salt{grid-column:1/3;grid-row:2}.fresh{grid-row:3}.leaf{grid-row:auto}#l0,#l1,#l2{grid-column:1/3}.tree svg.lines{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🌍 أين يوجد ماء الأرض؟ وكيف نخزّنه؟</h1>
+  <div class="fsbar" role="group" aria-label="حجم الخط">
+    <span>حجم الخط</span>
+    <button id="dec" aria-label="تصغير">أ−</button>
+    <input id="rng" type="range" min="14" max="36" step="1" aria-label="حجم الخط">
+    <button id="inc" aria-label="تكبير">أ+</button>
+    <button id="rst" aria-label="إعادة">↺</button>
+  </div>
+</header>
+<main>
+<nav class="crumbs">
+  <button id="b1" class="cur">① الكرة الأرضية</button><span>◀</span>
+  <button id="b2" disabled>② الماء: مالح وعذب</button><span>◀</span>
+  <button id="b3" disabled>③ أنواع الماء العذب</button><span>◀</span>
+  <button id="b4">④ ملخص مرئي</button><span>◀</span>
+  <button id="b5">⑤ خزانات الماء العذب</button>
+</nav>
+
+<!-- 1 -->
+<section id="v1">
+  <div class="row">
+    <div class="chip landc" id="landChip"><span class="t">اليابس</span><span class="big n">30%</span></div>
+    <div class="globe" id="globe" role="button" tabindex="0" aria-label="الكرة الأرضية: اضغط على الماء"><canvas id="cv" width="340" height="340"></canvas></div>
+    <button class="chip water" id="waterChip"><span class="t">الماء</span><span class="big n">70%</span></button>
+  </div>
+  <div class="hint">👆 الأرض تدور… معظمها <b>ماء</b>. اضغط على <b>الماء</b> (الكرة أو البطاقة الزرقاء) لتعرف أنواعه.</div>
+  <div class="info" id="land" hidden>اليابس <span class="n" dir="ltr">30%</span> فقط من سطح الأرض (القارات والجزر). ركّز الآن على الماء <span class="n" dir="ltr">70%</span>.</div>
+</section>
+
+<!-- 2 -->
+<section id="v2" hidden>
+  <div class="row">
+    <div class="pie">
+      <svg viewBox="-170 -170 340 340" role="img" aria-label="قرص: 97% ماء مالح و3% ماء عذب">
+        <circle r="150" fill="#1c4e9c"/>
+        <path class="fw" id="fw" tabindex="0" role="button" aria-label="الماء العذب 3%" fill="#00a3b8" stroke="#fff" stroke-width="3"/>
+        <circle r="150" fill="none" stroke="#fff" stroke-width="3" style="pointer-events:none"/>
+      </svg>
+    </div>
+    <div style="display:grid;gap:.8rem">
+      <div class="chip water"><span class="t">ماء مالح (محيطات وبحار)</span><span class="big n">97%</span></div>
+      <button class="chip" id="freshChip" style="border-color:var(--fresh);color:#007a8a"><span class="t">ماء عذب</span><span class="big n">3%</span></button>
+    </div>
+  </div>
+  <div class="hint">👆 اضغط على <b>الماء العذب</b> (القطاع الفيروزي الصغير أو البطاقة) لترى أنواعه.</div>
+  <div class="bars">
+    <h2>المخطط (1): توزيع الماء على سطح الأرض (<span class="n" dir="ltr">100%</span>)</h2>
+    <div class="chart" id="c1">
+      <div class="bar solid" style="top:.35rem;width:97%"></div>
+      <div class="bar hatch" id="c1f" style="top:2.8rem;width:3%;cursor:pointer"></div>
+    </div>
+    <div class="axis" id="ax1"></div>
+    <div class="legrow"><span><span class="sq solid"></span>مياه مالحة <span class="n" dir="ltr">97%</span></span><span><span class="sq hatch"></span>مياه عذبة <span class="n" dir="ltr">3%</span></span></div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section id="v3" hidden>
+  <div class="tree" id="tree">
+    <svg class="lines" id="lines" aria-hidden="true"></svg>
+    <div class="nd root" id="nRoot"><span class="t">ماء الأرض كله</span><span class="big n" dir="ltr">100%</span></div>
+    <div class="pbar" id="pbar">
+      <div class="seg salt" id="nSalt"><span class="big n" dir="ltr">97%</span><span class="t">ماء مالح (محيطات وبحار)</span><span class="tag no">✗ لا نشربه ولا نزرع به مباشرة</span></div>
+      <div class="seg fresh" id="nFresh"><div class="flab" id="flab"><span class="t">ماء عذب</span> <span class="n" dir="ltr">3%</span></div></div>
+    </div>
+    <button class="nd leaf no" id="l0" data-i="0"></button>
+    <button class="nd leaf use" id="l1" data-i="1"></button>
+    <button class="nd leaf no" id="l2" data-i="2"></button>
+  </div>
+  <div class="banner" id="banner">
+    <span>المياه العذبة الجارية والجوفية التي نستخدمها تمثّل <b>0.6%</b> فقط من ماء الأرض!</span>
+    <button class="nextbtn" id="goRes">المرحلة ④: ملخص مرئي لما تعلمناه ◀</button>
+  </div>
+  <div class="info" id="info3">اضغط أي مربع في الشجرة لتقرأ تفاصيله.</div>
+  <div class="bars">
+    <h2>المخطط (2): تكبير الجزء العذب — كل خط متقطع يمثل <span class="n" dir="ltr">0.1%</span></h2>
+    <div class="b2" id="b2c"></div>
+  </div>
+</section>
+
+<!-- 5: خزانات الماء العذب -->
+<section id="v5" hidden>
+  <div class="res-grid">
+    <!-- الخزان الجوفي الطبيعي -->
+    <div class="res-card nat">
+      <div class="res-head">
+        <h2>1) الخزان الجوفي الطبيعي</h2>
+        <span class="badge nat">تحت سطح الأرض</span>
+      </div>
+      <div class="holder nat"><span class="ic">🧱</span><span><span class="q">ما الذي يحبس الماء هنا؟</span><span class="a">طبقة الطين (طبيعية)</span></span></div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 480 270" role="img" aria-label="رسم توضيحي للخزان الجوفي الطبيعي">
+          <defs>
+            <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9ebff"/><stop offset="100%" stop-color="#eef8ff"/></linearGradient>
+            <linearGradient id="aquifer" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3fa9f5"/><stop offset="100%" stop-color="#1c64b5"/></linearGradient>
+            <pattern id="pores" width="14" height="14" patternUnits="userSpaceOnUse">
+              <circle cx="4" cy="4" r="2.2" fill="#ffffff" fill-opacity="0.35"/>
+              <circle cx="11" cy="10" r="1.8" fill="#0d3a6e" fill-opacity="0.28"/>
+            </pattern>
+          </defs>
+          <!-- السماء -->
+          <rect x="0" y="0" width="480" height="72" fill="url(#sky1)"/>
+          <!-- سطح الأرض الأخضر -->
+          <rect x="0" y="66" width="480" height="16" fill="#4aa95c"/>
+          <!-- التربة العلوية -->
+          <rect x="0" y="82" width="480" height="44" fill="#c79a63"/>
+          <text x="240" y="109" text-anchor="middle" font-size="14" font-weight="700" fill="#4a2e0b">تربة وصخور نافذة (يمر منها ماء المطر)</text>
+          <!-- طبقة الصخور المسامية والماء الجوفي -->
+          <rect id="svgPorous" x="0" y="126" width="480" height="74" fill="url(#aquifer)"/>
+          <rect x="0" y="126" width="480" height="74" fill="url(#pores)"/>
+          <text x="275" y="158" text-anchor="middle" font-size="16" font-weight="800" fill="#ffffff">صخور عالية المسامية</text>
+          <text x="275" y="182" text-anchor="middle" font-size="14" font-weight="700" fill="#e6f5ff">(تختزن المياه العذبة الجوفية)</text>
+          <!-- طبقة الطين الكتيمة -->
+          <rect id="svgClay" x="0" y="200" width="480" height="70" fill="#7c4d2b"/>
+          <line x1="0" y1="200" x2="480" y2="200" stroke="#4d2c15" stroke-width="3"/>
+          <g><rect x="338" y="188" width="136" height="26" rx="13" fill="#fff" stroke="#4d2c15" stroke-width="3"/><text x="406" y="206" text-anchor="middle" font-size="12" font-weight="800" fill="#4d2c15">⬆ الطين يحبس الماء</text></g>
+          <text x="240" y="233" text-anchor="middle" font-size="16" font-weight="800" fill="#fff5e6">طبقة الطين (كتيمة)</text>
+          <text x="240" y="255" text-anchor="middle" font-size="13" font-weight="700" fill="#ffd9b3">تمنع تسرب الماء للأسفل وتحفظه</text>
+          <!-- البئر الارتوازية -->
+          <g id="svgWell">
+            <rect x="78" y="34" width="22" height="148" fill="#4a5568" stroke="#1a202c" stroke-width="2"/>
+            <rect x="84" y="42" width="10" height="136" fill="#63d2ff"/>
+            <polygon points="70,34 108,34 100,20 78,20" fill="#2d3748"/>
+            <path d="M98,42 Q125,42 128,60" fill="none" stroke="#00b4d8" stroke-width="6" stroke-linecap="round"/>
+            <rect x="12" y="10" width="118" height="24" rx="8" fill="#0f2e5c"/>
+            <text x="71" y="27" text-anchor="middle" font-size="13" font-weight="800" fill="#ffffff">بئر ارتوازية</text>
+          </g>
+        </svg>
+      </div>
+      <figure class="photo"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Ain_Umm_Sujoor_1.jpg?width=900" alt="عين أم السجور في الدراز بمملكة البحرين" onerror="this.parentNode.classList.add('bad')"><figcaption><b>📍 صورة حقيقية — عين أم السجور، الدراز (البحرين)</b><br>من عيون المياه الجوفية الطبيعية التي اشتهرت بها البحرين منذ حضارة دلمون.<span class="cr">تصوير: Wosios — رخصة CC BY 3.0 (ويكيميديا كومنز)</span></figcaption></figure>
+      <div class="pills">
+        <button class="pill act" onclick="showNat('porous',this)">🪨 صخور مسامية</button>
+        <button class="pill" onclick="showNat('clay',this)">🧱 طبقة الطين</button>
+        <button class="pill" onclick="showNat('well',this)">🚰 البئر الارتوازية</button>
+      </div>
+      <div class="res-info" id="natInfo"><b>صخور عالية المسامية:</b> تسمح بمرور أكبر كمية من ماء المطر وتخزينه داخل الخزان الجوفي الطبيعي تحت سطح الأرض.</div>
+    </div>
+
+    <!-- الخزان الاصطناعي (السد) -->
+    <div class="res-card art">
+      <div class="res-head">
+        <h2>2) الخزان الاصطناعي (السد)</h2>
+        <span class="badge art">من صنع الإنسان</span>
+      </div>
+      <div class="holder art"><span class="ic">🏗️</span><span><span class="q">ما الذي يحبس الماء هنا؟</span><span class="a">السد (من صنع الإنسان)</span></span></div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 480 270" role="img" aria-label="رسم توضيحي للخزان الاصطناعي والسد">
+          <defs>
+            <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9ebff"/><stop offset="100%" stop-color="#eef8ff"/></linearGradient>
+            <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22c1d6"/><stop offset="100%" stop-color="#0b7790"/></linearGradient>
+          </defs>
+          <!-- السماء -->
+          <rect x="0" y="0" width="480" height="120" fill="url(#sky2)"/>
+          <!-- جبال في الخلفية -->
+          <polygon points="0,120 95,40 190,120" fill="#8fa8be"/>
+          <polygon points="120,120 225,52 330,120" fill="#7a95ad"/>
+          <!-- البحيرة الاصطناعية (المياه المخزنة) -->
+          <rect id="svgLake" x="0" y="110" width="265" height="115" fill="url(#lake)"/>
+          <path d="M15,130 Q50,122 85,130 T155,130 T225,130" fill="none" stroke="#aef3ff" stroke-width="3"/>
+          <text x="130" y="162" text-anchor="middle" font-size="16" font-weight="800" fill="#ffffff">بحيرة اصطناعية</text>
+          <text x="130" y="185" text-anchor="middle" font-size="13" font-weight="700" fill="#e0fbff">(تجمع المياه الجارية لوقت الحاجة)</text>
+          <!-- السد الخرساني -->
+          <g id="svgDam">
+            <polygon points="255,95 295,95 330,225 255,225" fill="#718096" stroke="#2d3748" stroke-width="3"/>
+            <line x1="262" y1="130" x2="305" y2="130" stroke="#cbd5e0" stroke-width="2"/>
+            <line x1="262" y1="168" x2="315" y2="168" stroke="#cbd5e0" stroke-width="2"/>
+            <rect x="245" y="54" width="110" height="28" rx="8" fill="#008799"/>
+            <text x="300" y="73" text-anchor="middle" font-size="14" font-weight="800" fill="#ffffff">السد (يحجز الماء)</text>
+          </g>
+          <g><rect x="138" y="196" width="112" height="26" rx="13" fill="#fff" stroke="#2d3748" stroke-width="3"/><text x="194" y="214" text-anchor="middle" font-size="12" font-weight="800" fill="#1a202c">السد يحبس الماء ➜</text></g>
+          <!-- مجرى المياه للاستخدام -->
+          <rect x="330" y="192" width="150" height="33" fill="#38bdf8"/>
+          <path d="M312,188 Q336,192 345,205" fill="none" stroke="#e0f7ff" stroke-width="8" stroke-linecap="round"/>
+          <text x="405" y="176" text-anchor="middle" font-size="13" font-weight="800" fill="#0f2e5c">للمنازل والمزارع</text>
+          <text x="405" y="213" text-anchor="middle" font-size="13" font-weight="800" fill="#ffffff">ماء عذب وقت الحاجة</text>
+          <!-- الأرضية -->
+          <rect x="0" y="225" width="480" height="45" fill="#8b6944"/>
+        </svg>
+      </div>
+      <figure class="photo"><img loading="lazy" src="https://commons.wikimedia.org/wiki/Special:FilePath/Wadi_Dayqah_Dam_from_Wadi.jpg?width=900" alt="سد وادي ضيقة في سلطنة عُمان" onerror="this.parentNode.classList.add('bad')"><figcaption><b>📍 صورة حقيقية — سد وادي ضيقة (سلطنة عُمان)</b><br>سد خرساني ارتفاعه ٧٥ متراً يحجز مياه الوادي في بحيرة اصطناعية للشرب والزراعة.<span class="cr">تصوير: Wusel007 — رخصة CC BY-SA 4.0 (ويكيميديا كومنز)</span></figcaption></figure>
+      <div class="pills">
+        <button class="pill act" onclick="showArt('dam',this)">🏗️ السد الخرساني</button>
+        <button class="pill" onclick="showArt('lake',this)">🌊 البحيرة الاصطناعية</button>
+        <button class="pill" onclick="showArt('use',this)">🏡 وقت الحاجة</button>
+      </div>
+      <div class="res-info" id="artInfo"><b>السد:</b> بناء من صنع الإنسان يُقام على الأنهار والمجاري المائية ليحبس المياه الجارية ويمنع ضياعها.</div>
+    </div>
+  </div>
+
+  <table class="cmp">
+    <thead><tr><th class="c0"></th><th class="c1">🌿 الخزان الطبيعي</th><th class="c2">🏗️ الخزان الصناعي</th></tr></thead>
+    <tbody>
+      <tr><th>أين يوجد؟</th><td>تحت سطح الأرض داخل الصخور</td><td>على سطح الأرض في الأودية والأنهار</td></tr>
+      <tr><th>ما الذي يحبس الماء؟</th><td class="key k1">🧱 طبقة الطين</td><td class="key k2">🏗️ السد</td></tr>
+      <tr><th>من صنعه؟</th><td>الطبيعة</td><td>الإنسان</td></tr>
+      <tr><th>كيف نستفيد منه؟</th><td>نحفر بئراً ارتوازية</td><td>نفتح السد وقت الحاجة</td></tr>
+      <tr><th>مثال حقيقي</th><td>عين أم السجور (البحرين)</td><td>سد وادي ضيقة (عُمان)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="summary-strip">
+    <div>🔹 <b>الخزان الجوفي الطبيعي:</b> تحبسه <b>طبقة الطين</b> داخل <b>صخور مسامية</b>، ونستخرجه عبر <b>البئر الارتوازية</b>.</div>
+    <div>🔹 <b>الخزان الاصطناعي:</b> يحبسه <b>السد</b> (من صنع الإنسان) لتجميع المياه الجارية واستعمالها <b>وقت الحاجة</b>.</div>
+  </div>
+</section>
+
+<!-- 4: ملخص مرئي -->
+<section id="v4" hidden>
+  <div class="sum-box">
+    <h2>ملخص: ماء الأرض كله = <span class="n" dir="ltr">100%</span> — كم منه عذب؟ وكم نستخدم؟</h2>
+    <svg id="sumSvg" viewBox="0 0 1100 540" role="img" aria-label="قرص يبيّن 97% ماء مالح و3% ماء عذب، ثم تكبير الماء العذب إلى ثلاثة أجزاء: 2.3% متجمد و0.6% جارٍ وجوفي و0.1% بخار"></svg>
+  </div>
+  <div class="kcards">
+    <div class="kcard salt"><span class="kw">ماء مالح<br>(محيطات وبحار)</span><span class="kn">97%</span><span class="kt">✗ لا نشربه</span></div>
+    <div class="kcard ice"><span class="kw">مياه متجمدة<br>(ثلوج وجليد)</span><span class="kn">2.3%</span><span class="kt">✗ متجمد</span></div>
+    <div class="kcard use"><span class="kw">مياه جارية وجوفية</span><span class="kn">0.6%</span><span class="kt">✓ هذا ما نستخدمه</span></div>
+    <div class="kcard vap"><span class="kw">بخار الماء</span><span class="kn">0.1%</span><span class="kt">✗ في الهواء</span></div>
+  </div>
+  <div class="sumbanner">الماء الذي نستخدمه للشرب والزراعة والصناعة <b>0.6%</b> فقط من ماء الأرض!</div>
+  <div style="text-align:center;margin-top:1rem"><button class="nextbtn" id="goSum">المرحلة ⑤: كيف نخزّن الماء العذب ونصل إليه؟ ◀</button></div>
+</section>
+
+<p class="note">مقياس الرسم في المخطط (2): كل خط متقطع = <span class="n" dir="ltr">0.1%</span>. الأرقام والمفاهيم مأخوذة من كتاب الطالب وملزمة العلوم للصف السادس الابتدائي. الصور من ويكيميديا كومنز: عين أم السجور (Wosios، CC BY 3.0) وسد وادي ضيقة (Wusel007، CC BY-SA 4.0).</p>
+</main>
+<script>
+var $=function(i){return document.getElementById(i)};
+var FRESH=[
+ {id:'f',t:'مياه متجمدة (ثلوج وجليد)',p:2.3,col:'#3b82c4',pat:'repeating-linear-gradient(0deg,#fff 0 4px,#3b82c4 4px 6px)',d:'❄️ الأنهار الجليدية والجليد القطبي والثلوج على الجبال. أكبر جزء من الماء العذب لكنه متجمد.'},
+ {id:'g',t:'مياه جارية وجوفية',p:0.6,col:'#2f9e6b',pat:'radial-gradient(#000 1.2px,transparent 1.6px) 0 0/6px 6px,#fff',d:'🏞️ الأنهار والبحيرات والمياه المخزّنة تحت الأرض (الآبار). هي أكثر ما نستخدمه في حياتنا.'},
+ {id:'v',t:'بخار الماء',p:0.1,col:'#8e6bbf',pat:'repeating-linear-gradient(45deg,#fff 0 4px,#8e6bbf 4px 6px)',d:'☁️ الرطوبة والغيوم في الغلاف الجوي، ومنها يتكوّن المطر. نسبته قليلة لكنها تتجدد دائماً (دورة الماء).'}
+];
+function pc(x){return '<span class="n" dir="ltr">'+x+'%</span>'}
+var LAND=[
+ [[-168,66],[-160,70],[-140,70],[-125,70],[-95,72],[-80,72],[-62,60],[-55,50],[-67,45],[-76,35],[-81,25],[-97,26],[-97,19],[-88,16],[-83,9],[-78,8],[-92,14],[-105,20],[-112,30],[-118,33],[-124,40],[-125,49],[-135,58],[-150,60],[-165,56]],
+ [[-73,78],[-60,82],[-30,83],[-20,75],[-22,70],[-40,62],[-50,64],[-58,75]],
+ [[-78,8],[-72,12],[-62,10],[-50,0],[-35,-6],[-39,-15],[-48,-26],[-58,-38],[-65,-42],[-68,-52],[-72,-52],[-74,-40],[-71,-20],[-81,-6],[-80,0]],
+ [[-10,36],[-9,43],[-2,48],[5,52],[10,56],[5,62],[15,70],[30,71],[60,70],[80,73],[110,77],[140,72],[170,70],[180,66],[160,60],[142,52],[135,43],[122,40],[122,30],[110,20],[106,10],[100,2],[98,15],[92,22],[80,10],[73,20],[66,25],[57,25],[52,16],[43,13],[35,28],[35,36],[27,37],[22,38],[12,38],[8,44],[-5,36]],
+ [[-17,21],[-6,36],[10,37],[32,31],[35,28],[43,12],[51,12],[40,-2],[40,-15],[35,-25],[20,-35],[18,-32],[12,-17],[9,-1],[9,4],[-8,4],[-17,14]],
+ [[114,-22],[122,-18],[131,-12],[142,-11],[146,-19],[153,-26],[150,-37],[140,-38],[130,-32],[115,-34]],
+ [[-180,-72],[180,-72],[180,-90],[-180,-90]]
+];
+var MW=720,MH=360,map=document.createElement('canvas');map.width=MW;map.height=MH;
+var mc=map.getContext('2d');mc.fillStyle='#000';mc.fillRect(0,0,MW,MH);mc.fillStyle='#fff';
+LAND.forEach(function(poly){mc.beginPath();poly.forEach(function(q,i){var x=(q[0]+180)*2,y=(90-q[1])*2;i?mc.lineTo(x,y):mc.moveTo(x,y)});mc.closePath();mc.fill()});
+var mdata=mc.getImageData(0,0,MW,MH).data;
+var cv=$('cv'),ctx=cv.getContext('2d'),S=cv.width,R=S/2-2,img=ctx.createImageData(S,S),rot=0,tilt=0.35;
+function draw(){
+ var d=img.data,ct=Math.cos(tilt),st=Math.sin(tilt);
+ for(var y=0;y<S;y++)for(var x=0;x<S;x++){
+  var px=(x-S/2)/R,py=(S/2-y)/R,r2=px*px+py*py,o=(y*S+x)*4;
+  if(r2>1){d[o+3]=0;continue}
+  var pz=Math.sqrt(1-r2);
+  var y2=py*ct+pz*st,z2=pz*ct-py*st;
+  var lat=Math.asin(y2),lon=Math.atan2(px,z2)+rot;
+  var u=((lon/(2*Math.PI)+0.5)%1+1)%1,v=0.5-lat/Math.PI;
+  var mi=((Math.min(MH-1,Math.floor(v*MH))*MW)+Math.floor(u*MW))*4;
+  var isL=mdata[mi]>128,sh=0.35+0.65*Math.max(0,(-px*0.5+py*0.5+pz*0.7));
+  var rr=isL?170:28,gg=isL?125:90,bb=isL?70:170;
+  if(!isL&&sh>0.9){rr+=40;gg+=40;bb+=20}
+  var edge=1-pz;rr=rr*sh+edge*40;gg=gg*sh+edge*70;bb=bb*sh+edge*90;
+  d[o]=rr;d[o+1]=gg;d[o+2]=bb;d[o+3]=255;
+ }
+ ctx.putImageData(img,0,0);
+}
+var last=0,reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+function loop(t){if(!$('v1').hidden&&t-last>40){rot+=reduce?0:0.018;last=t;draw()}requestAnimationFrame(loop)}
+draw();requestAnimationFrame(loop);
+
+var level=1;
+function go(l){
+ level=l;['v1','v2','v3','v4','v5'].forEach(function(id,i){$(id).hidden=(i+1)!==l});
+ ['b1','b2','b3','b4','b5'].forEach(function(id,i){var b=$(id);b.classList.toggle('cur',(i+1)===l);if(i+1<=l)b.disabled=false});
+ if(l===3)buildFlow();
+ window.scrollTo({top:0});
+}
+$('b1').onclick=function(){go(1)};$('b2').onclick=function(){go(2)};$('b3').onclick=function(){go(3)};$('b4').onclick=function(){go(4)};$('b5').onclick=function(){go(5)};$('goSum').onclick=function(){go(5)};
+$('goRes').onclick=function(){go(4)};
+function act(el,fn){el.addEventListener('click',fn);el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();fn()}})}
+act($('globe'),function(){go(2)});act($('waterChip'),function(){go(2)});
+act($('landChip'),function(){$('land').hidden=false});
+
+(function(){
+ var a0=-Math.PI/2,a1=a0+2*Math.PI*0.03,r=150,mid=(a0+a1)/2;
+ var p=function(a){return (r*Math.cos(a)).toFixed(2)+' '+(r*Math.sin(a)).toFixed(2)};
+ $('fw').setAttribute('d','M0 0 L'+p(a0)+' A'+r+' '+r+' 0 0 1 '+p(a1)+' Z');
+ $('fw').style.transform='translate('+(10*Math.cos(mid)).toFixed(1)+'px,'+(10*Math.sin(mid)).toFixed(1)+'px)';
+ var h='';for(var i=0;i<=100;i+=10)h+='<span class="n" style="left:'+i+'%">'+i+'</span>';
+ $('ax1').innerHTML=h+'<span class="n" style="left:104%">%</span>';
+})();
+act($('fw'),function(){go(3)});act($('freshChip'),function(){go(3)});act($('c1f'),function(){go(3)});
+
+function buildFlow(){
+ FRESH.forEach(function(c,i){
+  var l=$('l'+i),use=(c.id==='g');
+  l.style.borderColor=use?'':c.col;
+  l.innerHTML='<span class="t">'+c.t+'</span><span class="big n" dir="ltr" style="color:'+(use?'#0b7a41':'#555')+'">'+c.p+'%</span>'+(use?'<span class="tag ok">✓ هذا ما نستخدمه</span>':'<span class="tag no">✗ لا نستخدمه ('+(c.id==='f'?'متجمد':'بخار')+')</span>');
+  l.onclick=function(){sel(i)};
+ });
+ var h='';FRESH.forEach(function(c){h+='<div class="lb">'+c.t+'</div><div class="trk"><i style="width:0;background:'+c.pat+';background-color:#fff" data-w="'+(c.p/3*100)+'"></i><b class="n" dir="ltr" style="left:calc('+(c.p/3*100)+'% + 6px)">'+c.p+'%</b></div>'});
+ h+='<span></span><div class="ax">';[0,0.5,1,1.5,2,2.5,3].forEach(function(v){h+='<span class="n" dir="ltr" style="left:'+(v/3*100)+'%">'+v+'</span>'});h+='<span class="n" style="left:104%">%</span></div>';
+ $('b2c').innerHTML=h;
+ setTimeout(lines,650);setTimeout(function(){[].forEach.call(document.querySelectorAll('.trk i'),function(e){e.style.width=e.dataset.w+'%'});lines()},50);
+ lines();
+}
+function lines(){
+ var sv=$('lines');if(!sv||$('v3').hidden)return;sv.innerHTML='';
+ var tr=$('tree').getBoundingClientRect();
+ function pt(id,side){var r=$(id).getBoundingClientRect();return {x:r.left-tr.left+r.width/2,y:r.top-tr.top+(side==='b'?r.height:0)}}
+ function link(a,b,col,dash){var p1=pt(a,'b'),p2=pt(b,'t'),my=(p1.y+p2.y)/2;
+  var p=document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d','M'+p1.x+' '+p1.y+' C'+p1.x+' '+my+' '+p2.x+' '+my+' '+p2.x+' '+p2.y);
+  p.setAttribute('fill','none');p.setAttribute('stroke',col);p.setAttribute('stroke-width',dash?'3':'5');if(dash)p.setAttribute('stroke-dasharray','8 6');sv.appendChild(p)}
+ link('nRoot','nSalt','#1c4e9c',true);link('nRoot','flab','#00a3b8');
+ link('nFresh','l0','#999',true);link('nFresh','l1','#14a05a');link('nFresh','l2','#999',true);
+}
+window.addEventListener('resize',lines);
+function sel(i){
+ FRESH.forEach(function(c,j){$('l'+j).classList.toggle('sel',i===j)});
+ var c=FRESH[i];$('info3').style.borderColor=c.col;
+ var why=c.id==='g'?'<b>✓ هذا هو الماء الذي نستخدمه</b> للشرب والزراعة والصناعة.':(c.id==='f'?'✗ لا نستطيع استخدامه مباشرة لأنه متجمد في القطبين والجبال.':'✗ لا نستطيع استخدامه لأنه بخار في الهواء.');
+ $('info3').innerHTML='<b>'+c.t+' = '+pc(c.p)+'</b> من مياه الأرض.<br>'+c.d+'<br>'+why;
+}
+
+// ===== تفاعل المرحلة 4 (خزانات الماء العذب) =====
+var NAT_TEXT={
+ porous:'<b>صخور عالية المسامية:</b> تسمح بمرور أكبر كمية من ماء المطر وتخزينه داخل الخزان الجوفي الطبيعي تحت سطح الأرض.',
+ clay:'<b>طبقة الطين (كتيمة):</b> طبقة غير نافذة تقع أسفل الصخور المسامية وتمنع تسرب المياه الجوفية للأسفل فتحفظها.',
+ well:'<b>البئر الارتوازية:</b> تُحفر للوصول إلى الخزان الجوفي وضخ المياه العذبة بأقل التكاليف عندما تكون قريبة من سطح الأرض.'
+};
+var ART_TEXT={
+ dam:'<b>السد:</b> بناء من صنع الإنسان يُقام على الأنهار والمجاري المائية ليحبس المياه الجارية ويمنع ضياعها.',
+ lake:'<b>البحيرة الاصطناعية:</b> تتكوّن خلف السد لتجميع كميات كبيرة من المياه العذبة السطحية وحفظها.',
+ use:'<b>الاستفادة وقت الحاجة:</b> تُستخدم المياه المخزّنة في الشرب والمنازل والزراعة والمصانع عند قلة الأمطار.'
+};
+function showNat(k,btn){
+ btn.parentNode.querySelectorAll('.pill').forEach(function(b){b.classList.remove('act')});
+ btn.classList.add('act');
+ $('natInfo').innerHTML=NAT_TEXT[k];
+}
+function showArt(k,btn){
+ btn.parentNode.querySelectorAll('.pill').forEach(function(b){b.classList.remove('act')});
+ btn.classList.add('act');
+ $('artInfo').innerHTML=ART_TEXT[k];
+}
+
+
+// ===== رسم الملخص المرئي (المرحلة 5) =====
+(function(){
+ var NS='http://www.w3.org/2000/svg',sv=$('sumSvg'),h='';
+ function P(cx,cy,r,d){var a=d*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)]}
+ function sec(cx,cy,r,d0,d1,big){var a=P(cx,cy,r,d0),b=P(cx,cy,r,d1);return 'M'+cx+' '+cy+' L'+a[0].toFixed(1)+' '+a[1].toFixed(1)+' A'+r+' '+r+' 0 '+(big?1:0)+' 1 '+b[0].toFixed(1)+' '+b[1].toFixed(1)+' Z'}
+ var C={salt:'#1c4e9c',ice:'#4fc3f7',use:'#14a05a',vap:'#8e6bbf'};
+ // القرص الأول
+ var cx=205,cy=270,r=170,half=5.4,ex=20;
+ var d0=-half,dIce=d0+2.3*3.6,dUse=dIce+0.6*3.6,dVap=dUse+0.1*3.6;
+ h+='<path d="'+sec(cx,cy,r,half,360-half,true)+'" fill="'+C.salt+'" stroke="#fff" stroke-width="3"/>';
+ h+='<g transform="translate('+ex+',0)">'+
+  '<path d="'+sec(cx,cy,r,d0,dIce)+'" fill="'+C.ice+'"/>'+
+  '<path d="'+sec(cx,cy,r,dIce,dUse)+'" fill="'+C.use+'"/>'+
+  '<path d="'+sec(cx,cy,r,dUse,dVap)+'" fill="'+C.vap+'"/></g>';
+ h+='<text class="w" x="170" y="262" text-anchor="middle" font-size="34" fill="#fff">ماء مالح</text>';
+ h+='<text class="num" x="170" y="330" text-anchor="middle" font-size="76" fill="#fff">97%</text>';
+ // خطوط التكبير
+ var a=P(cx+ex,cy,r,-half),b=P(cx+ex,cy,r,half),R2=145,cx2=745,cy2=270;
+ var t1=P(cx2,cy2,R2,180+70),t2=P(cx2,cy2,R2,180-70);
+ h+='<path d="M'+a[0]+' '+a[1]+' L'+t1[0]+' '+t1[1]+' M'+b[0]+' '+b[1]+' L'+t2[0]+' '+t2[1]+'" stroke="#44546a" stroke-width="3" stroke-dasharray="9 7" fill="none"/>';
+ h+='<text class="w" x="520" y="262" text-anchor="middle" font-size="26" fill="#007a8a">ماء عذب</text>';
+ h+='<text class="num" x="520" y="306" text-anchor="middle" font-size="44" fill="#007a8a">3%</text>';
+ h+='<text class="w" x="520" y="470" text-anchor="middle" font-size="20" fill="#44546a">تكبير الجزء العذب</text>';
+ // القرص المكبّر: حصص من الـ3%
+ var s0=20,sIce=s0+276,sUse=sIce+72,sVap=sUse+12; // ice 20..296, use 296..368, vap 368..380
+ h+='<path d="'+sec(cx2,cy2,R2,s0,sIce,true)+'" fill="'+C.ice+'" stroke="#fff" stroke-width="3"/>';
+ h+='<path d="'+sec(cx2,cy2,R2,sUse,sVap)+'" fill="'+C.vap+'" stroke="#fff" stroke-width="3"/>';
+ var mu=(sIce+sUse)/2,dx=14*Math.cos(mu*Math.PI/180),dy=14*Math.sin(mu*Math.PI/180);
+ h+='<path transform="translate('+dx.toFixed(1)+','+dy.toFixed(1)+')" d="'+sec(cx2,cy2,R2,sIce,sUse)+'" fill="'+C.use+'" stroke="#fff" stroke-width="4"/>';
+ // نص داخل الجزء المتجمد
+ h+='<text class="w" x="700" y="285" text-anchor="middle" font-size="26" fill="#06425a">مياه متجمدة</text>';
+ h+='<text class="w" x="700" y="315" text-anchor="middle" font-size="22" fill="#06425a">(ثلوج وجليد)</text>';
+ h+='<text class="num" x="700" y="375" text-anchor="middle" font-size="52" fill="#06425a">2.3%</text>';
+ // عناوين الجزءين الصغيرين
+ var u=P(cx2+dx,cy2+dy,R2,mu),v=P(cx2,cy2,R2,(sUse+sVap)/2+0);
+ h+='<line x1="'+u[0]+'" y1="'+u[1]+'" x2="905" y2="170" stroke="#14a05a" stroke-width="4"/>';
+ h+='<rect x="905" y="105" width="190" height="130" rx="14" fill="#e9fbf1" stroke="#14a05a" stroke-width="5"/>';
+ h+='<text class="w" x="1000" y="140" text-anchor="middle" font-size="22" fill="#0b7a41">جارية وجوفية</text>';
+ h+='<text class="num" x="1000" y="192" text-anchor="middle" font-size="52" fill="#0b7a41">0.6%</text>';
+ h+='<text class="w" x="1000" y="222" text-anchor="middle" font-size="20" fill="#0b7a41">✓ نستخدمه</text>';
+ h+='<line x1="'+v[0]+'" y1="'+v[1]+'" x2="905" y2="330" stroke="#8e6bbf" stroke-width="4"/>';
+ h+='<rect x="905" y="285" width="190" height="105" rx="14" fill="#f2ecfa" stroke="#8e6bbf" stroke-width="4"/>';
+ h+='<text class="w" x="1000" y="322" text-anchor="middle" font-size="22" fill="#5f3f94">بخار الماء</text>';
+ h+='<text class="num" x="1000" y="372" text-anchor="middle" font-size="46" fill="#5f3f94">0.1%</text>';
+ sv.innerHTML=h;
+})();
+var KEY='water_fs2',DEF=20;
+function setFs(v){v=Math.max(14,Math.min(36,v));document.documentElement.style.setProperty('--fs',v+'px');$('rng').value=v;try{localStorage.setItem(KEY,v)}catch(e){}setTimeout(lines,60)}
+var sv=DEF;try{sv=parseInt(localStorage.getItem(KEY))||DEF}catch(e){}
+setFs(sv);
+$('inc').onclick=function(){setFs(+$('rng').value+2)};$('dec').onclick=function(){setFs(+$('rng').value-2)};
+$('rst').onclick=function(){setFs(DEF)};$('rng').oninput=function(){setFs(+this.value)};
+</script>
+</body>
+</html>
