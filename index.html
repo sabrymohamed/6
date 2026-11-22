@@ -2,7 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f2e5c">
+<meta name="description" content="درس تفاعلي: توزيع المياه على الأرض وخزانات الماء العذب (علوم - الصف السادس الابتدائي)">
 <title>توزيع المياه وخزانات الماء العذب على الأرض</title>
 <style>
 :root{--fs:20px;--salt:#1c4e9c;--fresh:#00a3b8;--land:#b5834a;--ink:#14213d;--bg:#f4f8fb;--line:#cfdbe6;--c1:#3b82c4;--c2:#2f9e6b;--c3:#8e6bbf}
@@ -162,6 +164,35 @@ button.chip:hover,button.chip:focus-visible{box-shadow:0 0 0 4px rgba(20,33,61,.
 .note{font-size:.7rem;color:#44546a;margin-top:1rem}
 @media(max-width:860px){.res-grid,.summary-strip{grid-template-columns:1fr}}
 @media(max-width:760px){.tree{grid-template-columns:1fr 1fr}.root,.fresh{grid-column:1/3}.salt{grid-column:1/3;grid-row:2}.fresh{grid-row:3}.leaf{grid-row:auto}#l0,#l1,#l2{grid-column:1/3}.tree svg.lines{display:none}}
+
+/* ===== تهيئة الهاتف والأجهزة اللوحية ===== */
+html{-webkit-text-size-adjust:100%}
+button,.globe,.pie path{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+img,svg,canvas{max-width:100%}
+.cmp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cmp-wrap .cmp{min-width:30rem}
+header{padding-top:max(.6rem,env(safe-area-inset-top));padding-inline:max(1rem,env(safe-area-inset-left))}
+@media(max-width:860px){
+ .sum-box{overflow-x:auto}
+ .sum-box svg{min-width:640px}
+}
+@media(max-width:760px){
+ header{position:static}
+ h1{font-size:1rem}
+ .fsbar input{width:6rem}
+ main{padding:.7rem}
+ .crumbs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:.4rem;-webkit-overflow-scrolling:touch}
+ .crumbs button{white-space:nowrap;flex:none}
+ .chip{min-width:7rem;padding:.4rem .8rem}
+ .chip .big{font-size:2rem}
+ .pbar{grid-column:1/3}
+ .tree{gap:1rem}
+ .flab{font-size:.9rem}
+ .banner{font-size:.95rem}
+ .kcard .kn{font-size:2rem}
+ .row{gap:.9rem}
+}
+@media(max-width:420px){.kcards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -355,7 +386,7 @@ button.chip:hover,button.chip:focus-visible{box-shadow:0 0 0 4px rgba(20,33,61,.
     </div>
   </div>
 
-  <table class="cmp">
+  <div class="cmp-wrap"><table class="cmp">
     <thead><tr><th class="c0"></th><th class="c1">🌿 الخزان الطبيعي</th><th class="c2">🏗️ الخزان الصناعي</th></tr></thead>
     <tbody>
       <tr><th>أين يوجد؟</th><td>تحت سطح الأرض داخل الصخور</td><td>على سطح الأرض في الأودية والأنهار</td></tr>
@@ -364,7 +395,7 @@ button.chip:hover,button.chip:focus-visible{box-shadow:0 0 0 4px rgba(20,33,61,.
       <tr><th>كيف نستفيد منه؟</th><td>نحفر بئراً ارتوازية</td><td>نفتح السد وقت الحاجة</td></tr>
       <tr><th>مثال حقيقي</th><td>عين أم السجور (البحرين)</td><td>سد وادي ضيقة (عُمان)</td></tr>
     </tbody>
-  </table>
+  </table></div>
 
   <div class="summary-strip">
     <div>🔹 <b>الخزان الجوفي الطبيعي:</b> تحبسه <b>طبقة الطين</b> داخل <b>صخور مسامية</b>، ونستخرجه عبر <b>البئر الارتوازية</b>.</div>
@@ -558,7 +589,7 @@ function showArt(k,btn){
  h+='<text class="num" x="1000" y="372" text-anchor="middle" font-size="46" fill="#5f3f94">0.1%</text>';
  sv.innerHTML=h;
 })();
-var KEY='water_fs2',DEF=20;
+var KEY='water_fs2',DEF=(window.innerWidth<760?16:20);
 function setFs(v){v=Math.max(14,Math.min(36,v));document.documentElement.style.setProperty('--fs',v+'px');$('rng').value=v;try{localStorage.setItem(KEY,v)}catch(e){}setTimeout(lines,60)}
 var sv=DEF;try{sv=parseInt(localStorage.getItem(KEY))||DEF}catch(e){}
 setFs(sv);
